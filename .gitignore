@@ -1,0 +1,5 @@
+node_modules/
+.next/
+.minimal-canvas-demo/
+.DS_Store
+*.log

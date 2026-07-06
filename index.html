@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio - LIANGSHENGYU</title>
+  <link href="fonts/google-fonts.css" rel="stylesheet">
+  <script src="lib/tailwind.js"></script>
+  <script src="lib/react.js"></script>
+  <script src="lib/react-dom.js"></script>
+  <script src="lib/babel.js"></script>
+  <script src="lib/framer-motion.js"></script>
+  <script>window.Motion = window.FramerMotion;</script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #070b0a; color: #e8e8f0; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    img, video { max-width: 100%; display: block; }
+    ::selection { background: rgba(94, 210, 156, 0.2); }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(50px); transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal-left { opacity: 0; transform: translateX(-60px); transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal-right { opacity: 0; transform: translateX(60px); transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal-scale { opacity: 0; transform: scale(0.92); transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+    .active, .active .reveal, .active .reveal-left, .active .reveal-right, .active .reveal-scale { opacity: 1; transform: translate(0) scale(1); }
+    .d1 { transition-delay: 0.08s; } .d2 { transition-delay: 0.16s; } .d3 { transition-delay: 0.24s; }
+
+    /* Hero */
+    .hero-text { font-size: clamp(48px, 10vw, 140px); font-weight: 800; letter-spacing: -0.04em; line-height: 0.85; }
+
+    /* Part 1 Dark */
+    .full-bleed { position: relative; width: 100vw; margin-left: calc(-50vw + 50%); overflow: hidden; }
+    .full-bleed img, .full-bleed video { width: 100%; display: block; }
+    .full-bleed-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 80px 6vw 40px; background: linear-gradient(to top, rgba(7, 11, 10, 0.95) 0%, rgba(7, 11, 10, 0) 100%); }
+    .full-bleed-num { font-size: 11px; color: #5ed29c; letter-spacing: 2px; font-weight: 500; }
+    .full-bleed-title { font-size: clamp(24px, 3vw, 36px); font-weight: 600; color: #fff; margin-top: 8px; letter-spacing: -0.02em; }
+    .full-bleed-desc { font-size: 14px; color: rgba(255, 255, 255, 0.55); line-height: 1.7; margin-top: 12px; max-width: 480px; }
+
+    .split { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .split-reverse { grid-template-columns: 1fr 1.2fr; }
+    .split img { width: 130%; border-radius: 6px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); transition: transform 0.4s ease, box-shadow 0.4s ease; }
+    .split img:hover { transform: scale(1.02); box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+    .split-num { font-size: 11px; color: #5ed29c; letter-spacing: 2px; font-weight: 500; margin-bottom: 12px; }
+    .split-title { font-size: clamp(22px, 2.5vw, 30px); font-weight: 600; color: #fff; letter-spacing: -0.02em; line-height: 1.2; }
+    .split-desc { font-size: 14px; color: rgba(255, 255, 255, 0.55); line-height: 1.7; margin-top: 16px; }
+    .split-meta { font-size: 12px; color: rgba(255, 255, 255, 0.3); margin-top: 20px; letter-spacing: 0.05em; }
+
+    .offset-left { display: grid; grid-template-columns: 1fr 0.5fr; gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 24px; align-items: end; }
+    .offset-left .img-wrap { margin-left: -10vw; }
+    .offset-right { display: grid; grid-template-columns: 0.5fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 24px; align-items: end; }
+    .offset-right .img-wrap { margin-right: -10vw; }
+    .offset-left img, .offset-right img { width: 100%; border-radius: 6px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); transition: transform 0.4s ease, box-shadow 0.4s ease; }
+    .offset-left img:hover, .offset-right img:hover { transform: scale(1.02); box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+    .offset-num { font-size: 11px; color: #5ed29c; letter-spacing: 2px; font-weight: 500; margin-bottom: 12px; }
+    .offset-title { font-size: clamp(22px, 2.5vw, 30px); font-weight: 600; color: #fff; letter-spacing: -0.02em; }
+    .offset-desc { font-size: 14px; color: rgba(255, 255, 255, 0.55); line-height: 1.7; margin-top: 16px; }
+
+    .section-label { font-size: 11px; color: #5ed29c; letter-spacing: 3px; font-weight: 500; text-transform: uppercase; }
+    .section-title { font-size: clamp(36px, 6vw, 72px); font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: #fff; }
+    .section-desc { font-size: 15px; color: rgba(255, 255, 255, 0.5); line-height: 1.7; max-width: 440px; }
+    .tag { display: inline-block; font-size: 11px; color: #5ed29c; border: 1px solid rgba(94, 210, 156, 0.25); padding: 4px 12px; border-radius: 20px; margin-right: 6px; margin-bottom: 6px; }
+
+    /* Part 1 Header title row */
+    .p1-header-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+
+    /* Part 2 — Sticky Scroll */
+    .part2-light { background: #f9f9fa; color: #1a1a1a; }
+    .p2-label { font-size: 11px; color: #999; letter-spacing: 4px; font-weight: 500; text-transform: uppercase; }
+    .p2-title { font-size: clamp(48px, 8vw, 80px); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; color: #1a1a1a; }
+    .p2-subtitle { font-size: 18px; color: #666; margin-top: 24px; line-height: 1.6; max-width: 600px; font-weight: 400; }
+
+    .p2-divider { height: 1px; background: #e0e0e0; max-width: 1200px; margin: 0 auto; }
+
+    .section-divider { height: 1px; background: rgba(255, 255, 255, 0.04); max-width: 1200px; margin: 0 auto; }
+    .section-gap { height: 100px; }
+    .item-gap { height: 120px; }
+    .part-gap { height: 200px; }
+
+    /* ─── Part 2 Stacking Cards (IDC) ─── */
+    .stack-card { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #f9f9fa; overflow: hidden; }
+    .stack-card-inner { display: grid; grid-template-columns: 0.55fr 1.45fr; gap: 40px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; align-items: center; }
+    .stack-card-text { padding: 20px 0; }
+    .stack-card-num { font-size: 11px; color: #3370ff; letter-spacing: 2px; font-weight: 600; margin-bottom: 16px; }
+    .stack-card-title { font-size: clamp(22px, 2.5vw, 30px); font-weight: 700; color: #1a1a1a; letter-spacing: -0.02em; line-height: 1.2; }
+    .stack-card-desc { font-size: 15px; color: #666; line-height: 1.8; margin-top: 16px; max-width: 400px; }
+    .stack-card-img { height: 100vh; margin-right: -10vw; display: flex; gap: 16px; align-items: center; justify-content: flex-start; overflow: visible; }
+    .stack-card-img img { height: auto; max-height: 100vh; width: auto; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
+    .stack-card-tags { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+    .stack-card-tag { font-size: 11px; color: #3370ff; background: rgba(51, 112, 255, 0.06); border: 1px solid rgba(51, 112, 255, 0.2); padding: 4px 12px; border-radius: 4px; font-weight: 500; }
+    .stack-card-enter { opacity: 0; transform: translateY(30px) scale(0.97); transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+    .stack-card-enter.active { opacity: 1; transform: translateY(0) scale(1); }
+
+    @media (max-width: 900px) {
+      .stack-card-inner { grid-template-columns: 1fr; padding: 40px 24px; }
+      .stack-card-img { height: auto; max-height: 55vh; margin-right: 0; }
+      .stack-card { height: auto; padding: 40px 0; }
+    }
+    .p3-item { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .p3-item-reverse { grid-template-columns: 1fr 1fr; }
+    .p3-item img { width: 100%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); transition: transform 0.4s ease, box-shadow 0.4s ease; }
+    .p3-item img:hover { transform: scale(1.02); box-shadow: 0 30px 80px rgba(0,0,0,0.12); }
+    .p3-item-num { font-size: 11px; color: #3370ff; letter-spacing: 2px; font-weight: 600; margin-bottom: 12px; }
+    .p3-item-title { font-size: clamp(22px, 2.5vw, 30px); font-weight: 700; color: #1a1a1a; letter-spacing: -0.02em; }
+    .p3-item-desc { font-size: 15px; color: #666; line-height: 1.8; margin-top: 16px; }
+    .p3-item-tags { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+    .p3-item-tag { font-size: 11px; color: #3370ff; background: rgba(51, 112, 255, 0.06); border: 1px solid rgba(51, 112, 255, 0.2); padding: 4px 12px; border-radius: 4px; font-weight: 500; }
+
+    @media (max-width: 900px) {
+      .p3-item, .p3-item-reverse { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    @media (max-width: 900px) {
+      .split, .split-reverse { grid-template-columns: 1fr; gap: 24px; }
+      .offset-left, .offset-right { grid-template-columns: 1fr; gap: 24px; }
+      .offset-left .img-wrap, .offset-right .img-wrap { margin-left: 0; margin-right: 0; }
+      .p2-sticky-container { grid-template-columns: 1fr; padding-top: 40px; }
+      .p2-image-col { position: relative; top: 0; height: auto; margin-bottom: 40px; order: -1; }
+      .p2-image-wrapper { height: 60vh; width: 100%; }
+      .p2-text-item { min-height: auto; padding: 40px 0; }
+      .full-bleed-overlay { padding: 40px 24px 24px; }
+      .item-gap { height: 80px; }
+      .section-gap { height: 60px; }
+      .part-gap { height: 100px; }
+      .p2-image-row { gap: 12px; }
+      .p2-image-row img { height: 70%; }
+    }
+
+    /* ─── Liquid Glass ─── */
+    .liquid-glass {
+      background: rgba(255,255,255,0.01);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: none;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .liquid-glass::before {
+      content: "";
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+      background: linear-gradient(180deg,
+        rgba(255,255,255,0.45) 0%,
+        rgba(255,255,255,0.15) 20%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0.15) 80%,
+        rgba(255,255,255,0.45) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .liquid-glass-strong {
+      background: rgba(255,255,255,0.01);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(50px);
+      -webkit-backdrop-filter: blur(50px);
+      border: none;
+      box-shadow: 4px 4px 4px rgba(0,0,0,0.05), inset 0 1px 1px rgba(255,255,255,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .liquid-glass-strong::before {
+      content: "";
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+      background: linear-gradient(180deg,
+        rgba(255,255,255,0.5) 0%,
+        rgba(255,255,255,0.2) 20%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0.2) 80%,
+        rgba(255,255,255,0.5) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* ─── Part 3 — Melos Studio ─── */
+    .p3-full-bleed { position: relative; width: 100vw; margin-left: calc(-50vw + 50%); overflow: hidden; max-height: 85vh; }
+    .p3-full-bleed img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+    .p3-full-bleed-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 80px 6vw 40px; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%); }
+
+    .p3-split-left { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .p3-split-left .img-wrap { margin-left: -10vw; overflow: hidden; max-height: 80vh; border-radius: 6px; }
+    .p3-split-left img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 6px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+
+    .p3-split-right { display: grid; grid-template-columns: 1fr 1.3fr; gap: 40px; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .p3-split-right .img-wrap { margin-right: -10vw; overflow: hidden; max-height: 80vh; border-radius: 6px; }
+    .p3-split-right img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 6px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+
+    .p3-offset-left { display: grid; grid-template-columns: 1fr 0.5fr; gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 24px; align-items: end; }
+    .p3-offset-left .img-wrap { margin-left: -10vw; overflow: hidden; max-height: 80vh; border-radius: 6px; }
+    .p3-offset-right { display: grid; grid-template-columns: 0.5fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 24px; align-items: end; }
+    .p3-offset-right .img-wrap { margin-right: -10vw; overflow: hidden; max-height: 80vh; border-radius: 6px; }
+    .p3-offset-left img, .p3-offset-right img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 6px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+
+    .p3-num { font-size: 11px; color: #f97316; letter-spacing: 2px; font-weight: 500; margin-bottom: 12px; }
+    .p3-title { font-size: clamp(22px, 2.5vw, 30px); font-weight: 600; color: #fff; letter-spacing: -0.02em; line-height: 1.2; }
+    .p3-subtitle { font-size: 12px; color: rgba(255,255,255,0.35); letter-spacing: 1px; font-weight: 500; text-transform: uppercase; margin-top: 6px; }
+    .p3-desc { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.7; margin-top: 16px; }
+
+    @media (max-width: 900px) {
+      .p3-split-left, .p3-split-right { grid-template-columns: 1fr; gap: 24px; }
+      .p3-split-left .img-wrap, .p3-split-right .img-wrap { margin-left: 0; margin-right: 0; }
+      .p3-offset-left, .p3-offset-right { grid-template-columns: 1fr; gap: 24px; }
+      .p3-offset-left .img-wrap, .p3-offset-right .img-wrap { margin-left: 0; margin-right: 0; }
+      .p3-full-bleed { max-height: 60vh; }
+    }
+
+    /* ─── Space Travel Part 3 ─── */
+    .font-heading { font-family: 'Instrument Serif', serif; font-style: italic; }
+    .font-body { font-family: 'Barlow', sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const Menu = ({ className }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" />
+      </svg>
+    );
+    const X = ({ className }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+      </svg>
+    );
+    const ArrowDown = ({ className }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <path d="M12 5v14" /><path d="m19 12-7 7-7-7" />
+      </svg>
+    );
+
+    function Header() {
+      const [open, setOpen] = useState(false);
+      const links = [{ label: '即幕云AI', href: '#p1' }, { label: '担当办公', href: '#p2' }, { label: 'Melos Studio', href: '#p3' }];
+      return (
+        <>
+          <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 lg:px-20 py-6 backdrop-blur-md bg-[#070b0a]/30">
+            <div className="text-white text-[13px] font-medium tracking-[0.2em] uppercase select-none">Portfolio</div>
+            <nav className="hidden md:flex items-center gap-8">
+              {links.map(l => <a key={l.label} href={l.href} className="text-white/30 text-[14px] font-medium hover:text-white transition-colors duration-300">{l.label}</a>)}
+            </nav>
+            <button className="md:hidden text-white" onClick={() => setOpen(true)} aria-label="Open menu"><Menu className="w-6 h-6" /></button>
+          </header>
+          {open && (
+            <div className="fixed inset-0 z-[100] bg-[#070b0a] flex flex-col items-center justify-center gap-8">
+              <button className="absolute top-6 right-6 text-white" onClick={() => setOpen(false)} aria-label="Close menu"><X className="w-6 h-6" /></button>
+              {links.map(l => <a key={l.label} href={l.href} className="text-white text-[32px] font-light tracking-wide" onClick={() => setOpen(false)}>{l.label}</a>)}
+            </div>
+          )}
+        </>
+      );
+    }
+
+    function HeroSection() {
+      const videoRef = useRef(null);
+      useEffect(() => {
+        const video = videoRef.current; if (!video) return;
+        video.src = 'videos/hero.mp4';
+        video.play().catch(() => {});
+      }, []);
+      return (
+        <section className="relative h-screen w-full overflow-hidden bg-[#070b0a] flex items-end">
+          <div className="absolute inset-0 z-0">
+            <video ref={videoRef} autoPlay muted loop playsInline className="w-full h-full object-cover opacity-50" />
+          </div>
+          <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#070b0a] via-[#070b0a]/60 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 z-[1] bg-gradient-to-t from-[#070b0a] via-transparent to-[#070b0a]/30 pointer-events-none" />
+          <div className="absolute inset-0 z-[1] hidden md:block pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-px h-full bg-white/10" />
+            <div className="absolute top-0 left-1/2 w-px h-full bg-white/10" />
+            <div className="absolute top-0 left-3/4 w-px h-full bg-white/10" />
+          </div>
+          <div className="absolute top-[10%] left-1/2 -translate-x-1/2 z-[2] pointer-events-none w-full max-w-[700px]">
+            <svg width="100%" height="180" viewBox="0 0 800 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+              <defs><filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="25" result="blur" /></filter></defs>
+              <ellipse cx="400" cy="90" rx="300" ry="60" fill="#2dd4a0" fillOpacity="0.1" filter="url(#glow)" />
+            </svg>
+          </div>
+          <div className="relative z-10 px-6 md:px-12 lg:px-20 pb-16 md:pb-24 w-full">
+            <span className="text-[11px] text-[#5ed29c] tracking-[0.4em] uppercase font-medium block mb-6">LIANGSHENGYU</span>
+            <h1 className="hero-text text-white">PORTFOLIO</h1>
+            <div className="mt-8 md:mt-12 flex flex-col md:flex-row md:items-end gap-6 md:gap-20">
+              <p className="text-[13px] text-white/50 font-light tracking-[0.15em] uppercase leading-relaxed max-w-[280px]">
+                UI/UX Designer<br />Product experience & visual storytelling
+              </p>
+              <div className="hidden md:flex items-center gap-2 text-white/30 text-[11px] tracking-widest uppercase animate-pulse">
+                <ArrowDown className="w-3 h-3" /> Scroll
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─── Part 1 Header ─── */
+    function Part1Header() {
+      return (
+        <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 pt-[140px] pb-20" id="p1">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 reveal">
+            <span className="section-label mt-3">Part 01</span>
+            <div className="md:max-w-[560px]">
+              <h2 className="section-title">即幕云AI视频平台</h2>
+              <p className="section-desc mb-5 mt-4">AI-driven film & video creation platform. From script to storyboard, shot generation to final cut.</p>
+              <div className="flex flex-wrap"><span className="tag">AI</span><span className="tag">Film</span><span className="tag">Creation</span><span className="tag">SaaS</span></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ─── Part 1 Layouts ─── */
+    function FullBleed({ num, title, desc, img, cls }) {
+      const isVideo = img.endsWith('.mov') || img.endsWith('.mp4');
+      return (
+        <div className={`full-bleed ${cls || ''}`}>
+          {isVideo ? (
+            <video src={img} autoPlay muted loop playsInline />
+          ) : (
+            <img src={img} alt={title} loading="lazy" />
+          )}
+          <div className="full-bleed-overlay">
+            <span className="full-bleed-num">{num}</span>
+            <div className="full-bleed-title">{title}</div>
+            <p className="full-bleed-desc">{desc}</p>
+          </div>
+        </div>
+      );
+    }
+    function SplitLeft({ num, title, desc, meta, img, cls }) {
+      return (
+        <div className={`split ${cls || ''}`}>
+          <div className="reveal-left"><img src={img} alt={title} loading="lazy" /></div>
+          <div className="reveal-right d2">
+            <div className="split-num">{num}</div>
+            <h3 className="split-title">{title}</h3>
+            <p className="split-desc">{desc}</p>
+            {meta && <p className="split-meta">{meta}</p>}
+          </div>
+        </div>
+      );
+    }
+    function SplitRight({ num, title, desc, meta, img, cls }) {
+      return (
+        <div className={`split split-reverse ${cls || ''}`}>
+          <div className="reveal-left d2">
+            <div className="split-num">{num}</div>
+            <h3 className="split-title">{title}</h3>
+            <p className="split-desc">{desc}</p>
+            {meta && <p className="split-meta">{meta}</p>}
+          </div>
+          <div className="reveal-right"><img src={img} alt={title} loading="lazy" /></div>
+        </div>
+      );
+    }
+    function OffsetLeft({ num, title, desc, img, cls }) {
+      return (
+        <div className={`offset-left ${cls || ''}`}>
+          <div className="img-wrap reveal-left"><img src={img} alt={title} loading="lazy" /></div>
+          <div className="reveal-right d2 pb-8">
+            <div className="offset-num">{num}</div>
+            <h3 className="offset-title">{title}</h3>
+            <p className="offset-desc">{desc}</p>
+          </div>
+        </div>
+      );
+    }
+    function OffsetRight({ num, title, desc, img, cls }) {
+      return (
+        <div className={`offset-right ${cls || ''}`}>
+          <div className="reveal-left d2 pb-8">
+            <div className="offset-num">{num}</div>
+            <h3 className="offset-title">{title}</h3>
+            <p className="offset-desc">{desc}</p>
+          </div>
+          <div className="img-wrap reveal-right"><img src={img} alt={title} loading="lazy" /></div>
+        </div>
+      );
+    }
+
+    /* ─── Part 1 Content ─── */
+    function Part1Content() {
+      return (
+        <div>
+          <FullBleed num="01" title="沉浸式创作控制台"
+            desc="首页设计融合品牌视觉与功能入口，顶部沉浸式横幅引入四个核心创作路径，整体深色界面减少视觉干扰，让用户快速进入创作状态。"
+            img="part1_hero.mov" />
+          <div className="item-gap" />
+          <SplitLeft num="02" title="内容发现流"
+            desc="发现页支持多维度筛选与排序，用户可按最新、最热、关注等维度浏览内容。卡片式布局配合悬停预览，提升内容探索效率。"
+            meta="Discovery / Feed" img="p1_110.jpg" />
+          <div className="item-gap" />
+          <OffsetRight num="03" title="多风格创作引擎"
+            desc="一键切换十余种影视与动画风格，从写实到二次元，每个风格配备专属参数面板。智能推荐根据用户历史偏好匹配最优风格。"
+            img="p1_03.jpg" />
+          <div className="item-gap" />
+          <FullBleed num="04" title="无限画布工作区"
+            desc="自由画布支持文字、图片、视频与上传素材的混合编辑。拖拽式操作与智能对齐辅助，让非专业用户也能快速完成复杂视频编排。"
+            img="p1_86.jpg" />
+          <div className="item-gap" />
+          <SplitRight num="05" title="AI角色资产库"
+            desc="公共与私有角色资产库，支持一键收藏与分类管理。每个角色卡片展示预览、标签、使用次数与创作者信息，方便快速筛选。"
+            meta="Assets / Library" img="p1_23.jpg" />
+          <div className="item-gap" />
+          <OffsetLeft num="06" title="角色编辑与锁定"
+            desc="精细化角色编辑器，支持提示词驱动的生成控制。锁定功能确保核心角色特征在多场景中的一致性，降低AI生成的不可控性。"
+            img="p1_103.jpg" />
+          <div className="item-gap" />
+          <FullBleed num="07" title="创作者个人空间"
+            desc="创作者个人空间，展示已发布作品、收藏内容与AI生成标签。个人品牌化的页面设计，帮助创作者建立专业形象。"
+            img="p1_20.jpg" />
+          <div className="item-gap" />
+          <SplitLeft num="08" title="AI镜头生成"
+            desc="提示词驱动的场景生成，多帧预览与实时对比。支持批量生成与筛选，显著缩短影视制作中的分镜设计周期。"
+            meta="AI / Generation" img="p1_62.jpg" />
+          <div className="item-gap" />
+          <OffsetRight num="09" title="分镜序列"
+            desc="基于剧集的场景组织，卡片式布局清晰呈现时间线与场景关系。支持拖拽排序与场景属性编辑，适配团队协作流程。"
+            img="p1_60.jpg" />
+          <div className="item-gap" />
+          <SplitLeft num="10" title="视觉资产库"
+            desc="角色、场景与道具的统一管理平台，支持批量操作与批量导出。智能分类与搜索功能，帮助团队高效管理海量视觉资产。"
+            meta="Library / Management" img="p1_31.jpg" />
+          <div className="item-gap" />
+          <OffsetLeft num="11" title="多图角色管理"
+            desc="同一角色多服装、多姿态的集中管理。支持关联绑定与快速切换，确保角色在多场景、多角度下保持视觉一致性。"
+            img="p1_47.jpg" />
+        </div>
+      );
+    }
+
+    /* ─── Part 2 — Hero + Sticky Scroll Combined ─── */
+    function Part2() {
+      return (
+        <div className="part2-light" id="p2">
+          {/* Hero Video Card */}
+          <div className="px-6 md:px-12 lg:px-20 pt-20 pb-16 md:pb-20">
+            <div className="relative w-full max-w-[1400px] mx-auto rounded-[48px] bg-white overflow-hidden flex flex-col" style={{ height: 'clamp(400px, 55vh, 600px)' }}>
+              <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
+                <video
+                  src="videos/part2.mp4"
+                  autoPlay loop muted playsInline
+                  className="w-full h-full object-cover"
+                  style={{ background: '#f5f5f7' }}
+                />
+              </div>
+              <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(245,245,247,0.3) 0%, rgba(245,245,247,0.6) 50%, rgba(245,245,247,0.95) 100%)' }} />
+              <div className="relative z-20 flex-1 px-8 md:px-16 pt-12 md:pt-16 flex flex-col items-start">
+                <div>
+                  <h2 className="text-[36px] md:text-[48px] lg:text-[56px] font-bold tracking-tight text-[#1a1a1a] leading-tight">担当办公</h2>
+                  <p className="text-[13px] md:text-[14px] text-[#64748b] mt-5 max-w-[520px] leading-relaxed">
+                    AI智能办公：整合OA、ERP、CRM等多系统功能，支持多终端协同访问，借助AI技术提升办公流程自动化水平，助力企业构建高效协同的智慧办公环境。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stacking Cards */}
+          <div className="relative">
+            <div className="stack-card" style={{ zIndex: 1 }}>
+              <div className="stack-card-inner stack-card-enter reveal">
+                <div className="stack-card-text">
+                  <span className="stack-card-num">01</span>
+                  <h3 className="stack-card-title">移动端办公套件</h3>
+                  <p className="stack-card-desc">即时通讯与移动工作台的无缝整合。消息实时同步，应用一键直达，让移动办公像聊天一样自然流畅。</p>
+                  <div className="stack-card-tags">
+                    <span className="stack-card-tag">IM</span>
+                    <span className="stack-card-tag">消息</span>
+                    <span className="stack-card-tag">工作台</span>
+                    <span className="stack-card-tag">移动端</span>
+                  </div>
+                </div>
+                <div className="stack-card-img">
+                  <img src="dd1.png" alt="移动端办公套件" loading="lazy" />
+                  <img src="dd2.png" alt="移动端办公套件" loading="lazy" />
+                </div>
+              </div>
+            </div>
+            <div className="stack-card" style={{ zIndex: 2 }}>
+              <div className="stack-card-inner stack-card-enter reveal">
+                <div className="stack-card-text">
+                  <span className="stack-card-num">02</span>
+                  <h3 className="stack-card-title">桌面消息中心</h3>
+                  <p className="stack-card-desc">左侧会话列表、右侧消息详情的三栏布局，空状态采用情感化插画降低用户焦虑。桌面端消息管理，提升首次使用体验。</p>
+                  <div className="stack-card-tags">
+                    <span className="stack-card-tag">桌面端</span>
+                    <span className="stack-card-tag">消息</span>
+                    <span className="stack-card-tag">三栏布局</span>
+                  </div>
+                </div>
+                <div className="stack-card-img">
+                  <img src="dd3.png" alt="桌面消息中心" loading="lazy" />
+                </div>
+              </div>
+            </div>
+            <div className="stack-card" style={{ zIndex: 3 }}>
+              <div className="stack-card-inner stack-card-enter reveal">
+                <div className="stack-card-text">
+                  <span className="stack-card-num">03</span>
+                  <h3 className="stack-card-title">桌面工作台</h3>
+                  <p className="stack-card-desc">聚合企业应用、最近使用与审批待办，支持自定义常用应用与快速搜索。打造高效的一站式办公入口，桌面端效率最大化。</p>
+                  <div className="stack-card-tags">
+                    <span className="stack-card-tag">工作台</span>
+                    <span className="stack-card-tag">桌面端</span>
+                    <span className="stack-card-tag">效率</span>
+                  </div>
+                </div>
+                <div className="stack-card-img">
+                  <img src="dd4.png" alt="桌面工作台" loading="lazy" />
+                </div>
+              </div>
+            </div>
+            <div className="stack-card" style={{ zIndex: 4 }}>
+              <div className="stack-card-inner stack-card-enter reveal">
+                <div className="stack-card-text">
+                  <span className="stack-card-num">04</span>
+                  <h3 className="stack-card-title">审批流程</h3>
+                  <p className="stack-card-desc">三栏审批流程设计，左侧列表、中间详情、右侧操作区。状态可视化与审批时间线提升流程透明度，审批进度实时掌握。</p>
+                  <div className="stack-card-tags">
+                    <span className="stack-card-tag">审批</span>
+                    <span className="stack-card-tag">流程</span>
+                    <span className="stack-card-tag">B2B</span>
+                  </div>
+                </div>
+                <div className="stack-card-img">
+                  <img src="dd5.png" alt="审批流程" loading="lazy" />
+                </div>
+              </div>
+            </div>
+            <div className="stack-card" style={{ zIndex: 5 }}>
+              <div className="stack-card-inner stack-card-enter reveal">
+                <div className="stack-card-text">
+                  <span className="stack-card-num">05</span>
+                  <h3 className="stack-card-title">审批列表与筛选</h3>
+                  <p className="stack-card-desc">多状态审批列表，支持待处理、已完成、已发起等维度的筛选与搜索。批量操作减少重复点击，审批效率提升40%。</p>
+                  <div className="stack-card-tags">
+                    <span className="stack-card-tag">审批</span>
+                    <span className="stack-card-tag">筛选</span>
+                    <span className="stack-card-tag">效率</span>
+                  </div>
+                </div>
+                <div className="stack-card-img">
+                  <img src="dd6.png" alt="审批列表与筛选" loading="lazy" />
+                </div>
+              </div>
+            </div>
+            <div className="stack-card" style={{ zIndex: 6 }}>
+              <div className="stack-card-inner stack-card-enter reveal">
+                <div className="stack-card-text">
+                  <span className="stack-card-num">06</span>
+                  <h3 className="stack-card-title">知识库首页</h3>
+                  <p className="stack-card-desc">聚合企业核心知识资产，首页分类导航清晰直观，快速定位所需文档与知识资源。</p>
+                </div>
+                <div className="stack-card-img">
+                  <img src="idc1.png" alt="IDC 知识库首页" loading="lazy" />
+                </div>
+              </div>
+            </div>
+            <div className="stack-card" style={{ zIndex: 7 }}>
+              <div className="stack-card-inner stack-card-enter reveal">
+                <div className="stack-card-text">
+                  <span className="stack-card-num">07</span>
+                  <h3 className="stack-card-title">文档详情</h3>
+                  <p className="stack-card-desc">完整的文档阅读与编辑体验，支持目录导航、关键词高亮与版本历史追溯。</p>
+                </div>
+                <div className="stack-card-img">
+                  <img src="idc2.png" alt="知识文档详情" loading="lazy" />
+                </div>
+              </div>
+            </div>
+            <div className="stack-card" style={{ zIndex: 8 }}>
+              <div className="stack-card-inner stack-card-enter reveal">
+                <div className="stack-card-text">
+                  <span className="stack-card-num">08</span>
+                  <h3 className="stack-card-title">发现与分类</h3>
+                  <p className="stack-card-desc">多维度的知识分类与发现系统，智能推荐热门文档，帮助团队高效获取组织知识。</p>
+                </div>
+                <div className="stack-card-img">
+                  <img src="idc3.png" alt="知识分类与发现" loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ─── Footer ─── */
+    function Footer() {
+      return (
+        <footer className="relative min-h-[80vh] bg-black flex flex-col items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#f97316]/5 blur-[100px]" />
+          </div>
+
+          <div className="relative z-10 text-center px-6">
+            <h2 className="font-heading italic text-white text-5xl md:text-7xl lg:text-[5.5rem] leading-[0.9] tracking-tight">
+              Get in Touch
+            </h2>
+            <p className="mt-5 text-white/40 text-sm font-light tracking-wide">
+              期待与您的合作
+            </p>
+
+            <div className="mt-12 liquid-glass-strong rounded-2xl px-10 py-8 md:px-16 md:py-10 max-w-[480px] mx-auto text-left">
+              <div className="space-y-5">
+                <div className="flex items-center gap-4">
+                  <span className="text-white/40 text-xs tracking-widest uppercase w-20">期望</span>
+                  <span className="text-white/80 text-sm font-medium">AIGC设计师</span>
+                </div>
+                <div className="h-px bg-white/10" />
+                <div className="flex items-center gap-4">
+                  <span className="text-white/40 text-xs tracking-widest uppercase w-20">Tel</span>
+                  <span className="text-white/80 text-sm font-medium">15613677775</span>
+                </div>
+                <div className="h-px bg-white/10" />
+                <div className="flex items-center gap-4">
+                  <span className="text-white/40 text-xs tracking-widest uppercase w-20">邮箱</span>
+                  <span className="text-white/80 text-sm font-medium">45633310@qq.com</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-8 left-0 right-0 text-center">
+            <p className="text-[10px] text-white/20 tracking-[0.3em] uppercase font-light">Portfolio</p>
+          </div>
+        </footer>
+      );
+    }
+
+    /* ─── Space Travel Part 3 ─── */
+    const FADE_MS = 500;
+    const FADE_OUT_LEAD = 0.55;
+
+    function FadingVideo({ src, className, style }) {
+      const videoRef = useRef(null);
+      const rafRef = useRef(null);
+      const fadingOutRef = useRef(false);
+
+      const fadeTo = (target, duration) => {
+        const video = videoRef.current;
+        if (!video) return;
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        const startOpacity = parseFloat(video.style.opacity || '0');
+        const startTime = performance.now();
+        const animate = (now) => {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const current = startOpacity + (target - startOpacity) * progress;
+          video.style.opacity = current.toString();
+          if (progress < 1) {
+            rafRef.current = requestAnimationFrame(animate);
+          }
+        };
+        rafRef.current = requestAnimationFrame(animate);
+      };
+
+      useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        const onLoadedData = () => {
+          video.style.opacity = '0';
+          video.play().catch(() => {});
+          fadeTo(1, FADE_MS);
+        };
+
+        const onTimeUpdate = () => {
+          if (!fadingOutRef.current && video.duration && video.duration - video.currentTime <= FADE_OUT_LEAD && video.duration - video.currentTime > 0) {
+            fadingOutRef.current = true;
+            fadeTo(0, FADE_MS);
+          }
+        };
+
+        const onEnded = () => {
+          video.style.opacity = '0';
+          setTimeout(() => {
+            video.currentTime = 0;
+            video.play().catch(() => {});
+            fadingOutRef.current = false;
+            fadeTo(1, FADE_MS);
+          }, 100);
+        };
+
+        video.addEventListener('loadeddata', onLoadedData);
+        video.addEventListener('timeupdate', onTimeUpdate);
+        video.addEventListener('ended', onEnded);
+
+        return () => {
+          if (rafRef.current) cancelAnimationFrame(rafRef.current);
+          video.removeEventListener('loadeddata', onLoadedData);
+          video.removeEventListener('timeupdate', onTimeUpdate);
+          video.removeEventListener('ended', onEnded);
+        };
+      }, [src]);
+
+      return (
+        <video
+          ref={videoRef}
+          src={src}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          className={className}
+          style={style}
+        />
+      );
+    }
+
+    /* ─── Part 3 Layout Components ─── */
+    function P3FullBleed({ num, title, subtitle, desc, img }) {
+      return (
+        <div className="p3-full-bleed">
+          <img src={img} alt={title} loading="lazy" />
+          <div className="p3-full-bleed-overlay">
+            <span className="p3-num">{num}</span>
+            <div className="p3-title">{title}</div>
+            <div className="p3-subtitle">{subtitle}</div>
+            <p className="p3-desc">{desc}</p>
+          </div>
+        </div>
+      );
+    }
+
+    function P3SplitLeft({ num, title, subtitle, desc, img }) {
+      return (
+        <div className="p3-split-left">
+          <div className="img-wrap reveal-left">
+            <img src={img} alt={title} loading="lazy" />
+          </div>
+          <div className="reveal-right d2">
+            <div className="p3-num">{num}</div>
+            <h3 className="p3-title">{title}</h3>
+            <div className="p3-subtitle">{subtitle}</div>
+            <p className="p3-desc">{desc}</p>
+          </div>
+        </div>
+      );
+    }
+
+    function P3SplitRight({ num, title, subtitle, desc, img }) {
+      return (
+        <div className="p3-split-right">
+          <div className="reveal-left d2">
+            <div className="p3-num">{num}</div>
+            <h3 className="p3-title">{title}</h3>
+            <div className="p3-subtitle">{subtitle}</div>
+            <p className="p3-desc">{desc}</p>
+          </div>
+          <div className="img-wrap reveal-right">
+            <img src={img} alt={title} loading="lazy" />
+          </div>
+        </div>
+      );
+    }
+
+    function P3OffsetLeft({ num, title, subtitle, desc, img }) {
+      return (
+        <div className="p3-offset-left">
+          <div className="img-wrap reveal-left">
+            <img src={img} alt={title} loading="lazy" />
+          </div>
+          <div className="reveal-right d2 pb-8">
+            <div className="p3-num">{num}</div>
+            <h3 className="p3-title">{title}</h3>
+            <div className="p3-subtitle">{subtitle}</div>
+            <p className="p3-desc">{desc}</p>
+          </div>
+        </div>
+      );
+    }
+
+    function P3OffsetRight({ num, title, subtitle, desc, img }) {
+      return (
+        <div className="p3-offset-right">
+          <div className="reveal-left d2 pb-8">
+            <div className="p3-num">{num}</div>
+            <h3 className="p3-title">{title}</h3>
+            <div className="p3-subtitle">{subtitle}</div>
+            <p className="p3-desc">{desc}</p>
+          </div>
+          <div className="img-wrap reveal-right">
+            <img src={img} alt={title} loading="lazy" />
+          </div>
+        </div>
+      );
+    }
+
+    function P3Header() {
+      return (
+        <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 pt-[140px] pb-20" id="p3">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-8 reveal">
+            <div>
+              <span className="section-label block mb-4">Part 03</span>
+              <h2 className="section-title">Melos Studio</h2>
+            </div>
+            <div className="md:max-w-[340px] md:pb-2">
+              <p className="section-desc mb-5">Digital music trading platform. From NFT marketplace to DAW creation, discovery to collaboration.</p>
+              <div className="flex flex-wrap"><span className="tag">NFT</span><span className="tag">Music</span><span className="tag">Trading</span><span className="tag">DAW</span></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function P3Content() {
+      return (
+        <div>
+          <P3FullBleed
+            num="01"
+            title="全景生态入口"
+            subtitle="Ecosystem Hub"
+            desc="一站式数字音乐交易与创作生态平台，聚合市场、创作、社交与虚拟演出，构建完整的数字音乐闭环。"
+            img="melos/3@2x.png"
+          />
+          <div className="item-gap" />
+          <P3SplitRight
+            num="02"
+            title="智能交易市场"
+            subtitle="Smart Marketplace"
+            desc="多维筛选与实时交易数据，支持流派、创作者、价格等多维度过滤，精准定位目标数字资产。"
+            img="melos/Frame 77726320@2x.png"
+          />
+          <div className="item-gap" />
+          <P3SplitLeft
+            num="03"
+            title="NFT资产详情"
+            subtitle="NFT Asset Detail"
+            desc="完整的数字资产交易历史、价格走势与推荐相关资产，透明可信的交易记录，助力用户做出明智决策。"
+            img="melos/1@2x.png"
+          />
+          <div className="item-gap" />
+          <P3OffsetRight
+            num="04"
+            title="发现探索"
+            subtitle="Discovery Explorer"
+            desc="个性化推荐艺术家、专辑与音乐藏品，打造沉浸式发现体验，让每一次探索都有新惊喜。"
+            img="melos/Frame 77725648@2x.png"
+          />
+          <div className="item-gap" />
+          <P3SplitRight
+            num="05"
+            title="神秘盲盒"
+            subtitle="Mystery Box"
+            desc="限量数字藏品的惊喜开箱体验，限时抢购与独家发售，为收藏家提供独特的获取途径。"
+            img="melos/Frame 77725644@2x.png"
+          />
+          <div className="item-gap" />
+          <P3OffsetLeft
+            num="06"
+            title="音乐创作库"
+            subtitle="Music Loop Library"
+            desc="多轨道音频管理与创作资源库，支持波形预览与标签分类，为创作者提供高效的资产管理工具。"
+            img="melos/首页@2x.png"
+          />
+          <div className="item-gap" />
+          <P3SplitRight
+            num="07"
+            title="音轨编辑器"
+            subtitle="Track Editor"
+            desc="直观的音轨管理与颜色标记系统，支持重命名、复制与删除，让复杂的编曲工作变得井井有条。"
+            img="melos/4.1track@2x.png"
+          />
+          <div className="item-gap" />
+          <P3FullBleed
+            num="08"
+            title="团队协作"
+            subtitle="Collaborative Workspace"
+            desc="实时评论与@提及的协作创作环境，多人同步编辑与反馈，打破地理限制，让创意协作无缝衔接。"
+            img="melos/5.2@2x.png"
+          />
+        </div>
+      );
+    }
+
+    function SpaceTravelHero() {
+      return (
+        <section className="relative min-h-screen bg-black overflow-hidden flex flex-col items-center justify-center">
+          <FadingVideo
+            src="videos/part3.mp4"
+            className="absolute left-1/2 top-0 -translate-x-1/2 object-cover object-top z-0"
+            style={{ width: '120%', height: '120%' }}
+          />
+
+          <div className="relative z-10 text-center px-4 flex flex-col items-center">
+            <h1 className="font-heading italic text-white text-7xl md:text-8xl lg:text-[9rem] leading-[0.8] tracking-[-6px]">
+              Melos Studio
+            </h1>
+            <p className="mt-6 text-base md:text-lg text-white/80 font-body font-light tracking-wide">
+              数字音乐交易平台
+            </p>
+            <div className="mt-10 liquid-glass-strong rounded-2xl px-8 py-6 md:px-10 md:py-8 max-w-[520px] text-center">
+              <p className="text-sm md:text-[15px] text-white/70 leading-relaxed font-light">
+                数字音乐交易平台，从 NFT 交易市场到 DAW 创作工具，从发现探索到协作共创。
+              </p>
+              <div className="mt-5 flex flex-wrap justify-center gap-2">
+                {['NFT', 'Music', 'Trading', 'DAW'].map(tag => (
+                  <span key={tag} className="text-xs text-white/50 border border-white/15 px-3 py-1 rounded-full">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Part3() {
+      return (
+        <div className="bg-black" id="p3">
+          <SpaceTravelHero />
+          <P3Content />
+        </div>
+      );
+    }
+
+    function App() {
+      useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.06, rootMargin: '0px 0px -50px 0px' });
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => observer.observe(el));
+        return () => observer.disconnect();
+      }, []);
+
+      return (
+        <div>
+          <Header />
+          <HeroSection />
+
+          <div className="section-gap" />
+          <div className="section-divider" />
+          <div className="section-gap" />
+
+          <Part1Header />
+          <Part1Content />
+
+          <div className="part-gap" />
+          <div className="section-divider" />
+          <div className="part-gap" />
+
+          <Part2 />
+          <Part3 />
+
+          <Footer />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
