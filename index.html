@@ -262,29 +262,17 @@
     }
 
     function HeroSection() {
-      const videoRef = useRef(null);
-      useEffect(() => {
-        const video = videoRef.current; if (!video) return;
-        video.src = 'videos/hero.mp4';
-        video.play().catch(() => {});
-      }, []);
       return (
         <section className="relative h-screen w-full overflow-hidden bg-[#070b0a] flex items-end">
           <div className="absolute inset-0 z-0">
-            <video ref={videoRef} autoPlay muted loop playsInline className="w-full h-full object-cover opacity-50" />
+            <video autoPlay muted loop playsInline className="w-full h-full object-cover opacity-80" src="videos/hero.mp4" />
           </div>
-          <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#070b0a] via-[#070b0a]/60 to-transparent pointer-events-none" />
-          <div className="absolute inset-0 z-[1] bg-gradient-to-t from-[#070b0a] via-transparent to-[#070b0a]/30 pointer-events-none" />
+          <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#070b0a]/80 via-[#070b0a]/20 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 z-[1] bg-gradient-to-t from-[#070b0a] via-transparent to-[#070b0a]/10 pointer-events-none" />
           <div className="absolute inset-0 z-[1] hidden md:block pointer-events-none">
             <div className="absolute top-0 left-1/4 w-px h-full bg-white/10" />
             <div className="absolute top-0 left-1/2 w-px h-full bg-white/10" />
             <div className="absolute top-0 left-3/4 w-px h-full bg-white/10" />
-          </div>
-          <div className="absolute top-[10%] left-1/2 -translate-x-1/2 z-[2] pointer-events-none w-full max-w-[700px]">
-            <svg width="100%" height="180" viewBox="0 0 800 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-              <defs><filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="25" result="blur" /></filter></defs>
-              <ellipse cx="400" cy="90" rx="300" ry="60" fill="#2dd4a0" fillOpacity="0.1" filter="url(#glow)" />
-            </svg>
           </div>
           <div className="relative z-10 px-6 md:px-12 lg:px-20 pb-16 md:pb-24 w-full">
             <span className="text-[11px] text-[#5ed29c] tracking-[0.4em] uppercase font-medium block mb-6">LIANGSHENGYU</span>
@@ -393,7 +381,7 @@
         <div>
           <FullBleed num="01" title="沉浸式创作控制台"
             desc="首页设计融合品牌视觉与功能入口，顶部沉浸式横幅引入四个核心创作路径，整体深色界面减少视觉干扰，让用户快速进入创作状态。"
-            img="part1_hero.mov" />
+            img="part1_hero.mp4" />
           <div className="item-gap" />
           <SplitLeft num="02" title="内容发现流"
             desc="发现页支持多维度筛选与排序，用户可按最新、最热、关注等维度浏览内容。卡片式布局配合悬停预览，提升内容探索效率。"
@@ -453,7 +441,6 @@
                   style={{ background: '#f5f5f7' }}
                 />
               </div>
-              <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(245,245,247,0.3) 0%, rgba(245,245,247,0.6) 50%, rgba(245,245,247,0.95) 100%)' }} />
               <div className="relative z-20 flex-1 px-8 md:px-16 pt-12 md:pt-16 flex flex-col items-start">
                 <div>
                   <h2 className="text-[36px] md:text-[48px] lg:text-[56px] font-bold tracking-tight text-[#1a1a1a] leading-tight">担当办公</h2>
