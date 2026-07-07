@@ -312,7 +312,7 @@
       return (
         <div className={`full-bleed ${cls || ''}`}>
           {isVideo ? (
-            <video src={img} autoPlay muted loop playsInline />
+            <video src={img} autoPlay muted loop playsInline className="w-full h-full object-cover" style={{ minHeight: '60vh' }} />
           ) : (
             <img src={img} alt={title} loading="lazy" />
           )}
